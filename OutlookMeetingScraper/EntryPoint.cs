@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
 using Microsoft.Exchange.WebServices.Data;
 
@@ -11,7 +14,8 @@ namespace OutlookMeetingScraper
             ServicePointManager.ServerCertificateValidationCallback = EwsExample.CertificateValidationCallBack;
 
             System.Console.WriteLine("Enter your email address");
-            var userName = System.Console.ReadLine();
+// ReSharper disable once PossibleNullReferenceException
+            var userName = System.Console.ReadLine().Trim();
 
             System.Console.WriteLine("Enter your password.  I won't steal it honest");
             var password = Console.ReadPassword();
@@ -25,9 +29,16 @@ namespace OutlookMeetingScraper
 
             service.AutodiscoverUrl(userName, EwsExample.RedirectionUrlValidationCallback);    
       
-            new ExchangeRetriever(service).MeetingStatistics();
+            var meetings = new ExchangeRetriever(service).MeetingStatistics(DateTime.Now - TimeSpan.FromDays(365 * 3), DateTime.Now);
 
-            System.Console.ReadKey();
+            using (var output = File.CreateText("c:/temp/accepted_meetings.csv"))
+            {
+                output.WriteLine("Meeting name,Meeting Date,Duration (hours)");
+                foreach (var meeting in meetings)
+                {
+                    output.WriteLine("{0},{1},{2}", meeting.Name, meeting.StartTime, meeting.Duration.TotalHours);
+                }
+            }
         }
     }
 
@@ -40,39 +51,38 @@ namespace OutlookMeetingScraper
             m_ExchangeService = exchangeService;
         }
 
-        public void MeetingStatistics()
+        public List<Meeting> MeetingStatistics(DateTime startDate, DateTime endDate)
         {
-            DateTime startDate = DateTime.Now - TimeSpan.FromDays(10);
-            DateTime endDate = DateTime.Now;
+            var allMeetings = new List<Meeting>();
 
-            // Initialize the calendar folder object with only the folder ID. 
-            var calendar = CalendarFolder.Bind(m_ExchangeService, WellKnownFolderName.Calendar, new PropertySet());
-
-            // Set the start and end time and number of appointments to retrieve.
-            var cView = new CalendarView(startDate, endDate)
+            while (startDate < endDate)
             {
-                PropertySet = new PropertySet(
-                    ItemSchema.Subject,
-                    AppointmentSchema.Start,
-                    AppointmentSchema.Duration,
-                    AppointmentSchema.MyResponseType
-                )
-            };
+                System.Console.WriteLine("Retrieving for {0}", startDate);
 
-            // Retrieve a collection of appointments by using the calendar view.
-            var meetings = calendar.FindAppointments(cView);
+                var calendar = CalendarFolder.Bind(m_ExchangeService, WellKnownFolderName.Calendar, new PropertySet());
 
-            System.Console.WriteLine("You've had {0} meetings since {1}", meetings.TotalCount, startDate);         
-            TimeSpan totalDuration = new TimeSpan();
+                // Set the start and end time and number of appointments to retrieve.
+                var cView = new CalendarView(startDate, startDate + TimeSpan.FromDays(28))
+                {
+                    PropertySet = new PropertySet(
+                        ItemSchema.Subject,
+                        AppointmentSchema.Start,
+                        AppointmentSchema.Duration,
+                        AppointmentSchema.MyResponseType
+                    )
+                };
 
-            foreach (var meeting in meetings)
-            {
-                if (meeting.MyResponseType == MeetingResponseType.Accept)
-                    totalDuration += meeting.Duration;
+                // Retrieve a collection of appointments by using the calendar view.
+                var meetings = calendar.FindAppointments(cView);
+
+                allMeetings.AddRange(
+                    meetings.Where(x => x.MyResponseType == MeetingResponseType.Accept).Select(meeting => new Meeting(meeting.Start, meeting.Duration, meeting.Subject))
+                );
+
+                startDate += TimeSpan.FromDays(28);
             }
 
-            System.Console.WriteLine("This has consumed {0} of your life", totalDuration.TotalHours.ToString("#.##"));
-
+            return allMeetings;
         }
     }
 }
