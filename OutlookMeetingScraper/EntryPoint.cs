@@ -19,8 +19,8 @@ namespace OutlookMeetingScraper
             var service = new ExchangeService(ExchangeVersion.Exchange2007_SP1)
             {
                 Credentials = new WebCredentials(userName, password),
-                TraceEnabled = true,
-                TraceFlags = TraceFlags.All
+                TraceEnabled = false,
+                TraceFlags = TraceFlags.None
             };
 
             service.AutodiscoverUrl(userName, EwsExample.RedirectionUrlValidationCallback);    
@@ -51,12 +51,15 @@ namespace OutlookMeetingScraper
             // Set the start and end time and number of appointments to retrieve.
             var cView = new CalendarView(startDate, endDate)
             {
-                PropertySet = new PropertySet(ItemSchema.Subject, AppointmentSchema.Start, AppointmentSchema.End)
+                PropertySet = new PropertySet(
+                    ItemSchema.Subject,
+                    AppointmentSchema.Start,
+                    AppointmentSchema.Duration
+                )
             };
 
             // Retrieve a collection of appointments by using the calendar view.
             var meetings = calendar.FindAppointments(cView);
-            m_ExchangeService.LoadPropertiesForItems(meetings, PropertySet.FirstClassProperties);
 
             System.Console.WriteLine("You've had {0} meetings since {1}", meetings.TotalCount, startDate);         
             TimeSpan totalDuration = new TimeSpan();
