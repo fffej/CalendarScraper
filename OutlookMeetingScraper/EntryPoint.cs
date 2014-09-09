@@ -54,7 +54,8 @@ namespace OutlookMeetingScraper
                 PropertySet = new PropertySet(
                     ItemSchema.Subject,
                     AppointmentSchema.Start,
-                    AppointmentSchema.Duration
+                    AppointmentSchema.Duration,
+                    AppointmentSchema.MyResponseType
                 )
             };
 

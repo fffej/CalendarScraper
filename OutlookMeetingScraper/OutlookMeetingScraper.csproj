@@ -49,6 +49,7 @@
     <Compile Include="Console.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="EwsExample.cs" />
+    <Compile Include="Meeting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
