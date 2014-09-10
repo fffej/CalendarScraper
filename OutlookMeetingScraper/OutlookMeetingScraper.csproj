@@ -57,6 +57,7 @@
     <Compile Include="ExchangeRetriever.cs" />
     <Compile Include="Meeting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

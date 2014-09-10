@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutlookMeetingScraper", "OutlookMeetingScraper.csproj", "{085FFAB5-EFB2-4CB0-8BEE-0B743815F54D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "..\Tests\Tests.csproj", "{C2DCCAF6-431F-40FC-8865-2ACA3EC0D9CC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{085FFAB5-EFB2-4CB0-8BEE-0B743815F54D} = {085FFAB5-EFB2-4CB0-8BEE-0B743815F54D}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
