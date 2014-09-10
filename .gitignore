@@ -44,4 +44,5 @@ Icon
 *.suo
 **/obj
 **/bin
+**/packages/
 *~
