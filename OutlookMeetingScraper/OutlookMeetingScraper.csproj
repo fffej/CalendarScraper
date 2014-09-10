@@ -53,7 +53,7 @@
     <Compile Include="AggregatedMeeting.cs" />
     <Compile Include="Console.cs" />
     <Compile Include="EntryPoint.cs" />
-    <Compile Include="EwsExample.cs" />
+    <Compile Include="EwsAuthentication.cs" />
     <Compile Include="ExchangeRetriever.cs" />
     <Compile Include="Meeting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -7,7 +7,7 @@ namespace OutlookMeetingScraper
     /// <summary>
     /// All code in this class comes from http://msdn.microsoft.com/en-us/library/office/jj220499(v=exchg.80).aspx
     /// </summary>
-    public static class EwsExample
+    public static class EwsAuthentication
     {
         public static bool RedirectionUrlValidationCallback(string redirectionUrl)
         {

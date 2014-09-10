@@ -11,7 +11,7 @@ namespace OutlookMeetingScraper
     {
         public static void Main(string[] args)
         {
-            ServicePointManager.ServerCertificateValidationCallback = EwsExample.CertificateValidationCallBack;
+            ServicePointManager.ServerCertificateValidationCallback = EwsAuthentication.CertificateValidationCallBack;
 
             System.Console.WriteLine("Enter your email address");
 // ReSharper disable once PossibleNullReferenceException
@@ -40,7 +40,7 @@ namespace OutlookMeetingScraper
                     TraceFlags = TraceFlags.None
                 };
 
-                service.AutodiscoverUrl(userName, EwsExample.RedirectionUrlValidationCallback);
+                service.AutodiscoverUrl(userName, EwsAuthentication.RedirectionUrlValidationCallback);
 
                 meetings = new ExchangeRetriever(service).MeetingStatistics(startDate, DateTime.Now);
                 File.WriteAllText(userName, JsonConvert.SerializeObject(meetings));
