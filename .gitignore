@@ -46,3 +46,4 @@ Icon
 **/bin
 **/packages/
 *~
+*.user
