@@ -1,4 +1,4 @@
-CalenderScraper
+CalendarScraper
 ===============
 
 Scrape exchange to get basic statistics
